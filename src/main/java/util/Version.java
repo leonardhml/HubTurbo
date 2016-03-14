@@ -3,11 +3,17 @@ package util;
 import ui.UI;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Represents a version with major, minor and patch number
  */
 public class Version implements Comparable<Version> {
+
+    private static final String EXCEPTION_STRING_NOT_VERSION = "String is not a valid Version. %s";
+
+    private static final Pattern VERSION_PATTERN = Pattern.compile("V(\\d+)\\.(\\d+)\\.(\\d+)");
 
     private final int major;
     private final int minor;
@@ -36,19 +42,16 @@ public class Version implements Comparable<Version> {
      * @param versionString version number string
      * @return a Version object
      */
-    public static Optional<Version> fromString(String versionString) {
-        // Strip non-digits
-        String numericVersion = versionString.replaceAll("[^0-9.]+", "");
+    public static Version fromString(String versionString) throws IllegalArgumentException {
+        Matcher versionMatcher = VERSION_PATTERN.matcher(versionString);
 
-        String[] temp = numericVersion.split("\\.");
-        try {
-            int major = temp.length > 0 ? Integer.parseInt(temp[0]) : 0;
-            int minor = temp.length > 1 ? Integer.parseInt(temp[1]) : 0;
-            int patch = temp.length > 2 ? Integer.parseInt(temp[2]) : 0;
-            return Optional.of(new Version(major, minor, patch));
-        } catch (NumberFormatException e) {
-            return Optional.empty();
+        if (!versionMatcher.find()) {
+            throw new IllegalArgumentException(String.format(EXCEPTION_STRING_NOT_VERSION, versionString));
         }
+
+        return new Version(Integer.parseInt(versionMatcher.group(1)),
+                           Integer.parseInt(versionMatcher.group(2)),
+                           Integer.parseInt(versionMatcher.group(3)));
     }
 
     public String toString() {
@@ -85,7 +88,7 @@ public class Version implements Comparable<Version> {
 
     @Override
     public int hashCode() {
-        String hash = String.format("%1$02d%2$02d%3$02d", major, minor, patch);
+        String hash = String.format("%03d%03d%03d", major, minor, patch);
         return Integer.parseInt(hash);
     }
 }
