@@ -13,6 +13,10 @@ public class UpdateConfig {
     private boolean lastUpdateDownloadStatus;
     private List<Version> listOfVersionsPreviouslyDownloaded;
 
+    public UpdateConfig() {
+        listOfVersionsPreviouslyDownloaded = new ArrayList<>();
+    }
+
     public void setLastUpdateDownloadStatus(boolean status) {
         this.lastUpdateDownloadStatus = status;
     }
@@ -22,19 +26,10 @@ public class UpdateConfig {
     }
 
     public void addToVersionPreviouslyDownloaded(Version downloadedVersion) {
-        if (listOfVersionsPreviouslyDownloaded == null) {
-            listOfVersionsPreviouslyDownloaded = new ArrayList<>();
-        }
-
         listOfVersionsPreviouslyDownloaded.add(downloadedVersion);
     }
 
     public boolean checkIfVersionWasPreviouslyDownloaded(Version version) {
-        if (listOfVersionsPreviouslyDownloaded == null) {
-            listOfVersionsPreviouslyDownloaded = new ArrayList<>();
-            return false;
-        }
-
         return listOfVersionsPreviouslyDownloaded.contains(version);
     }
 }

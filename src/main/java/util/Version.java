@@ -65,15 +65,9 @@ public class Version implements Comparable<Version> {
 
     @Override
     public int compareTo(Version other) {
-        if (this.equals(other)) {
-            return 0;
-        }
-
-        return this.major < other.major ? -1 :
-                this.major > other.major ? 1 :
-                this.minor < other.minor ? -1 :
-                this.minor > other.minor ? 1 :
-                this.patch < other.patch ? -1 : 1;
+        return this.major != other.major ? this.major - other.major :
+                this.minor != other.minor ? this.minor - other.minor :
+                this.patch != other.patch ? this.patch - other.patch : 0;
     }
 
     @Override
@@ -81,14 +75,12 @@ public class Version implements Comparable<Version> {
         if (obj == null) {
             return false;
         }
-        if (!Version.class.isAssignableFrom(obj.getClass())) {
+        if (!(obj instanceof Version)) {
             return false;
         }
         final Version other = (Version) obj;
 
-        return this.major == other.major &&
-                this.minor == other.minor &&
-                this.patch == other.patch;
+        return this.compareTo(other) == 0;
     }
 
     @Override

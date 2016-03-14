@@ -1,9 +1,8 @@
 package updater;
 
-import ui.UI;
 import util.Version;
 
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -13,24 +12,28 @@ import java.util.Optional;
  */
 public class UpdateData {
 
-    public List<UpdateDownloadLink> listOfLinks;
+    public List<UpdateDownloadLink> listOfHTVersionsDownloadLink;
+
+    public UpdateData() {
+        listOfHTVersionsDownloadLink = new ArrayList<>();
+    }
 
     /**
      * Get UpdateDownloadLink for update.
      * @return Optional.empty() if there is no update, UpdateDownloadLink of update that can be downloaded otherwise
      */
     public Optional<UpdateDownloadLink> getUpdateDownloadLink() {
-        if (listOfLinks == null) {
+        if (listOfHTVersionsDownloadLink.isEmpty()) {
             return Optional.empty();
         }
 
         // List the update link in descending order of version
-        Collections.sort(listOfLinks, Collections.reverseOrder());
+        Collections.sort(listOfHTVersionsDownloadLink, Collections.reverseOrder());
 
         Version current = Version.getCurrentVersion();
 
         // Get link of version that has same major version or just 1 major version up than current
-        Optional<UpdateDownloadLink> updateLink = listOfLinks.stream()
+        Optional<UpdateDownloadLink> updateLink = listOfHTVersionsDownloadLink.stream()
                 .filter(link ->
                         link.version.getMajor() == current.getMajor() ||
                         link.version.getMajor() == current.getMajor() + 1)
